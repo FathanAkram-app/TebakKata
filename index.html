@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Tebak Kata!</h1>
+    <h3 id="score">Score : 0</h3>
+    <h4 id="words"></h4>
+    
+    <input id="userInput" onchange="checkAnswer(this.value)">  </input>
+    <button onclick="checkAnswer()">Check Answer</button>
+    <script>
+        let answer = ""
+        let score = 0
+        String.prototype.replaceAtIndex = function(_index, _newValue) {
+            return this.substr(0, _index) + _newValue + this.substr(_index + _newValue.length)
+        }
+        newQuestion()
+
+        function checkAnswer(inputs) {
+            
+            if (answer === inputs) {
+                newQuestion()
+                score++
+                document.getElementById("score").innerText = "Score : "+ score
+
+            }
+            
+        }
+        function newQuestion() {
+            fetch('https://random-word-api.herokuapp.com/word?number=1&swear=0')
+                .then(response => response.json())
+                .then(data => {
+                    answer = data[0]
+                    console.log(answer)
+                    let encrypted = answer
+                    let encryptedResult = ""
+                    for (let index = 0; index < data[0].length/3; index++) {
+                        encrypted = encrypted.replaceAtIndex(Math.floor(Math.random() * data[0].length), "_")
+                    }
+                    for (let index = 0; index < encrypted.length; index++) {
+                        encryptedResult += encrypted[index] + " "
+                    }
+                    document.getElementById("words").innerText = encryptedResult
+                    
+                });
+            
+        }
+        
+        
+        
+    </script>
+    
+    
+</body>
+</html>
